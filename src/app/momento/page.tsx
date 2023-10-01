@@ -9,9 +9,14 @@ import {
 } from "@gomomento/sdk-web";
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { Tag } from "@chakra-ui/tag";
 
 export default function Home() {
-  const [chatHistory, setChatHistory] = useState<string[]>(["↓Chat↓"]);
+  const [chatHistory, setChatHistory] = useState<string[]>([
+    "aaaa",
+    "bbbb",
+    "cccc",
+  ]);
   let subscription: TopicSubscribe.Subscription | undefined = undefined;
 
   async function subscribeToTopic(cacheName: string, topicName: string) {
@@ -55,9 +60,12 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center  p-24">
+      <p>↓Chat↓</p>
       {chatHistory.map((chat) => (
-        <p key={uuidv4()}>{chat}</p>
+        <Tag className="m-1" key={uuidv4()} colorScheme="pink">
+          {chat}
+        </Tag>
       ))}
     </main>
   );
