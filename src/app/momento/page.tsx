@@ -4,15 +4,8 @@ import Image from "next/image";
 import React, { useEffect, useState, useRef, cache } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Tag } from "@chakra-ui/tag";
-import {
-  Input,
-  InputGroup,
-  InputAddon,
-  InputLeftAddon,
-  InputRightAddon,
-  InputLeftElement,
-  InputRightElement,
-} from "@chakra-ui/input";
+import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
+import { FormControl } from "@chakra-ui/form-control";
 import { Button } from "@chakra-ui/button";
 
 import {
@@ -174,37 +167,45 @@ type Props = {
 };
 
 function ChatInput(props: { cacheName: string; topicName: string }) {
-  const [show, setShow] = React.useState(false);
   const [input, setInput] = useState("");
   const handleInputChange = (e: any) => setInput(e.target.value);
 
-  const handleClick = () => {
+  const handleChatInputSubmit = () => {
     sendMessage(props.cacheName, props.topicName, "USERNAME", input);
     setInput("");
   };
 
+  useEffect(() => {}, [input]);
+
   return (
-    <InputGroup size="md">
-      <Input
-        pr="4.5rem"
-        type="text"
-        placeholder="Enter Chat"
-        value={input}
-        onChange={handleInputChange}
-      />
-      <InputRightElement width="4.5rem">
-        <Button
-          colorScheme="teal"
-          variant="solid"
-          h="1.75rem"
-          size="sm"
-          type="submit"
-          onClick={handleClick}
-        >
-          {"SEND"}
-        </Button>
-      </InputRightElement>
-    </InputGroup>
+    <FormControl className="flex  flex-col items-center ">
+      <InputGroup size="md" width={400}>
+        <Input
+          pr="4.5rem"
+          type="text"
+          placeholder="Enter Chat"
+          value={input}
+          onChange={handleInputChange}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleChatInputSubmit();
+            }
+          }}
+        />
+        <InputRightElement width="4.5rem">
+          <Button
+            colorScheme="teal"
+            variant="solid"
+            h="1.75rem"
+            size="sm"
+            type="submit"
+            onClick={handleChatInputSubmit}
+          >
+            {"SEND"}
+          </Button>
+        </InputRightElement>
+      </InputGroup>
+    </FormControl>
   );
 }
 
