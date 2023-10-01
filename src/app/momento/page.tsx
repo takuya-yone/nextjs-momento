@@ -166,19 +166,23 @@ type Props = {
   onLeave: () => void;
 };
 
-function ChatInput(props: { cacheName: string; topicName: string }) {
+function ChatInput(props: {
+  cacheName: string;
+  topicName: string;
+  userName: string;
+}) {
   const [input, setInput] = useState("");
   const handleInputChange = (e: any) => setInput(e.target.value);
 
   const handleChatInputSubmit = () => {
-    sendMessage(props.cacheName, props.topicName, "USERNAME", input);
+    sendMessage(props.cacheName, props.topicName, props.userName, input);
     setInput("");
   };
 
   useEffect(() => {}, [input]);
 
   return (
-    <FormControl className="flex  flex-col items-center ">
+    <FormControl className="flex  flex-col items-center m-1">
       <InputGroup size="md" width={400}>
         <Input
           pr="4.5rem"
@@ -226,6 +230,8 @@ function ChatToolTip(props: { chat: ChatEvent }) {
 }
 
 export default function Home() {
+  // const userName = uuidv4();
+  const [userName, setUserName] = useState<string>("");
   const cacheName = String(process.env.NEXT_PUBLIC_MOMENTO_CACHE_NAME);
   const topicName = String(process.env.NEXT_PUBLIC_MOMENTO_TOPIC_NAME);
 
@@ -255,11 +261,13 @@ export default function Home() {
   };
 
   useEffect(() => {
+    const name = uuidv4();
+    setUserName(name);
     subscribeToTopic(cacheName, topicName, onItem, onError)
       .then(() => {
         console.log("successfully subscribed");
         // sendMessage(cacheName, topicName, "aiueo", "message");
-        userJoined(cacheName, topicName, "username");
+        userJoined(cacheName, topicName, name);
       })
       .catch((e) => {
         console.error("error subscribing to topic", e);
@@ -268,7 +276,14 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center  p-24">
-      <ChatInput cacheName={cacheName} topicName={topicName} />
+      <Tag className="m-1" key={uuidv4()} colorScheme="blue">
+        {userName}
+      </Tag>
+      <ChatInput
+        cacheName={cacheName}
+        topicName={topicName}
+        userName={userName}
+      />
       <p className="m-1">↓Chat↓</p>
       {chats.map((chat) => (
         <ChatToolTip key={uuidv4()} chat={chat} />
